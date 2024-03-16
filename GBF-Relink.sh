@@ -25,4 +25,6 @@ unzip -o $temp_dir/GBFRelinkFix.zip -d "$temp_dir/GBFRelinkFix"
 cp -r $temp_dir/GBFRelinkFix/* "${game_dir}"
 
 # get current game options
-current_options=$(steam steam://rungameid/${steam_id} -command-line)
+current_options=$(option.sh $steam_id)
+echo "current options: $current_options"
+
