@@ -21,8 +21,18 @@ curl -L $latest_release -o $temp_dir/GBFRelinkFix.zip
 # Unzip the release
 unzip -o $temp_dir/GBFRelinkFix.zip -d "$temp_dir/GBFRelinkFix"
 
+if [[ -f "${game_dir}/scripts/GBFRelinkFix.ini" ]]; then
+    # backup old GBFRelinkFix.ini
+    mv "${game_dir}/scripts/GBFRelinkFix.ini" "${game_dir}/scripts/GBFRelinkFix.ini.bak"
+fi
+
 # copy the files to the game directory
 cp -r $temp_dir/GBFRelinkFix/* "${game_dir}"
+
+if [[ -f "${game_dir}/scripts/GBFRelinkFix.ini.bak" ]]; then
+    # restore old GBFRelinkFix.ini
+    mv "${game_dir}/scripts/GBFRelinkFix.ini.bak" "${game_dir}/scripts/GBFRelinkFix.ini"
+fi
 
 # get current game options
 current_options=$(./option.sh get $steam_id)
