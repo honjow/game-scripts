@@ -261,8 +261,6 @@ def main():
             sys.exit(1)
         if args.match == "name_exe":
             if args.name is None or args.exe is None:
-                # print("错误: 当 --match 为 'name_exe' 时，--name 和 --exe 是必需的")
-                # stderror
                 sys.stderr.write("错误: 当 --match 为 'name_exe' 时，--name 和 --exe 是必需的\n")
                 sys.exit(1)
             if check_shortcut_exists(args.name, args.exe):
