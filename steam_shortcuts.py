@@ -169,16 +169,62 @@ def create_image_from_exe(exe, name, img_path, img_type_dst=None):
                 app_id = shortcut["appid"]
                 compat_id = app_id + 2**32
                 dst = create_image(img_path, compat_id, user_dir, img_type_dst)
-                print(f"Created image {dst} for {name}")
+                print(
+                    f"Created image {dst} for {name}, appid {app_id}, compat_id {compat_id}"
+                )
                 if img_type_dst == "icon":
                     shortcut["icon"] = dst
         steam_shortcuts_file.save()
 
+def check_shortcut_exists(name, exe):
+    for user_dir in STEAM_USER_DIRS:
+        steam_shortcuts_file = SteamShortcutsFile(os.path.basename(user_dir))
+        shortcuts_map = steam_shortcuts_file.get_current_data()
+        for key in shortcuts_map:
+            shortcut = shortcuts_map[key]
+            if shortcut["exe"] == exe and shortcut["appname"] == name:
+                return True
+    return False
+
+
+def set_image_from_exe(
+    exe,
+    name,
+    icon_path=None,
+    cover_path=None,
+    banner_path=None,
+    background_path=None,
+    logo_path=None,
+):
+    if icon_path is not None and os.path.isfile(icon_path):
+        create_image_from_exe(exe, name, icon_path, "icon")
+    if cover_path is not None and os.path.isfile(cover_path):
+        create_image_from_exe(exe, name, cover_path, "poster")
+    if banner_path is not None and os.path.isfile(banner_path):
+        create_image_from_exe(exe, name, banner_path, "banner")
+    if background_path is not None and os.path.isfile(background_path):
+        create_image_from_exe(exe, name, background_path, "background")
+    if logo_path is not None and os.path.isfile(logo_path):
+        create_image_from_exe(exe, name, logo_path, "logo")
+
 
 def main():
-    parser = argparse.ArgumentParser(description="Steam shortcuts 图片管理")
+    parser = argparse.ArgumentParser(description="Steam shortcuts 管理")
     parser.add_argument(
-        "-t", "--type", type=str, default="fromexe", help="操作类型, 默认为 fromexe"
+        "-t",
+        "--type",
+        type=str,
+        default="setimg",
+        choices=["setimg", "isexisted"],
+        help="操作类型, 默认为 setimg",
+    )
+    parser.add_argument(
+        "-m",
+        "--match",
+        type=str,
+        default="name_exe",
+        choices=["name_exe", "appid"],
+        help="匹配方式",
     )
     parser.add_argument("-n", "--name", type=str, help="应用名称")
     parser.add_argument("-e", "--exe", type=str, help="执行文件路径")
@@ -190,22 +236,39 @@ def main():
 
     args = parser.parse_args()
 
-    if args.type == "fromexe":
+    if args.type == "setimg":
         if args.name is None or args.exe is None:
-            print("错误: 当 --type 为 'fromexe' 时，--name 和 --exe 是必需的")
+            print("错误: 当 --type 为 'setimg' 时，--match 是必需的")
             sys.exit(1)
-        name = args.name
-        exe = args.exe
-        if args.icon is not None:
-            create_image_from_exe(exe, name, args.icon, "icon")
-        if args.cover is not None:
-            create_image_from_exe(exe, name, args.cover, "poster")
-        if args.banner is not None:
-            create_image_from_exe(exe, name, args.banner, "banner")
-        if args.background is not None:
-            create_image_from_exe(exe, name, args.background, "background")
-        if args.logo is not None:
-            create_image_from_exe(exe, name, args.logo, "logo")
+
+        if args.match == "name_exe":
+            if args.name is None or args.exe is None:
+                print("错误: 当 --match 为 'name_exe' 时，--name 和 --exe 是必需的")
+                sys.exit(1)
+
+            set_image_from_exe(
+                args.exe,
+                args.name,
+                args.icon,
+                args.cover,
+                args.banner,
+                args.background,
+                args.logo,
+            )
+    if args.type == "isexisted":
+        if args.name is None or args.exe is None:
+            print("错误: 当 --type 为 'setimg' 时，--match 是必需的")
+            sys.exit(1)
+        if args.match == "name_exe":
+            if args.name is None or args.exe is None:
+                print("错误: 当 --match 为 'name_exe' 时，--name 和 --exe 是必需的")
+                sys.exit(1)
+            if check_shortcut_exists(args.name, args.exe):
+                print("存在")
+                sys.exit(0)
+            else:
+                print("不存在")
+                sys.exit(1)
 
 
 if __name__ == "__main__":

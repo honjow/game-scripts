@@ -3,5 +3,5 @@ __pycache__
 *.json
 
 vdf-test.py
-shortcuts.py
+shortcuts_.py
 test_shortcuts.py
