@@ -1,0 +1,7 @@
+__pycache__
+.pytest_cache
+*.json
+
+vdf-test.py
+shortcuts.py
+test_shortcuts.py
