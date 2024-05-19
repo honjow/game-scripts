@@ -57,6 +57,7 @@ function option_from_file() {
 
                 # 如果 option 中已经包含了 ADDON_OPTION 则不添加
                 if [[ $option =~ "$ADDON_OPTION " ]]; then
+                    echo "option already contains"
                     return
                 fi
 

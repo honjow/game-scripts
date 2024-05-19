@@ -221,13 +221,14 @@ def set_image_from_exe(
 
 def main():
     parser = argparse.ArgumentParser(description="Steam shortcuts 管理")
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
+    
     parser.add_argument(
-        "-t",
-        "--type",
+        "type",
         type=str,
         default="setimg",
         choices=["setimg", "isexisted"],
-        help="操作类型, 默认为 setimg",
+        help="操作类型 -- setimg 设置封面图片; isexisted 检查快捷方式是否存在",
     )
     parser.add_argument(
         "-m",
