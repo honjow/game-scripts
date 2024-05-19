@@ -48,9 +48,9 @@ class SteamConfigFile(ABC):
         """Returns True if the file exists, False otherwise"""
         return os.path.exists(self.path)
 
-    @abstractmethod
-    def apply_tweaks(self, tweak_data: dict, priority: int) -> None:
-        """Apply tweaks data to this configuration file"""
+    # @abstractmethod
+    # def apply_tweaks(self, tweak_data: dict, priority: int) -> None:
+    #     """Apply tweaks data to this configuration file"""
 
     @abstractmethod
     def load_data(self) -> None:
