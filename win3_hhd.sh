@@ -5,13 +5,13 @@ set -e
 # l4 esc
 l4_code="0x29"
 
-# r4 l_alt
-r4_code="0xE2"
+# r4 =
+r4_code="0x2E"
 
 # l4 + r4 求和
 l4_r4_code=$(printf '0x%X\n' $(( $(echo $l4_code) + $(echo $r4_code) )))
 
-hhd_path=/usr/lib/python*/site-packages/hhd
+hhd_path="/usr/lib/python*/site-packages/hhd"
 gpd_base_path="$hhd_path/device/gpd/win/base.py"
 
 # 分别获取包含 "case 0x" 的行号
